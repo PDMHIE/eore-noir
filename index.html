@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Éire Noir — GTA‑style Mini Game</title>
+  <style>
+    :root { --bg:#0d0f14; --ink:#e8ebf1; --accent:#4ade80; --danger:#ef4444; }
+    html, body { height:100%; margin:0; background:var(--bg); color:var(--ink); font:14px/1.4 system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, Noto Sans, "Apple Color Emoji", "Segoe UI Emoji"; }
+    #wrap { display:grid; grid-template-rows:auto 1fr auto; height:100%; }
+    header, footer { padding:10px 14px; background:#121621; border-bottom:1px solid #1e2537; }
+    header h1 { font-size:16px; margin:0; letter-spacing:0.3px; }
+    header small { color:#9aa3b2; }
+    #hud { display:flex; gap:12px; align-items:center; }
+    #hud .pill { padding:6px 10px; border-radius:999px; background:#0f1422; border:1px solid #1f2a44; }
+    #hud .pill b { color:var(--accent); }
+    #game { position:relative; background:#0b0e16; }
+    #canvas { display:block; width:100%; height:100%; outline:none; }
+    #msg { position:absolute; left:50%; top:16px; transform:translateX(-50%); background:rgba(10,14,22,.8); border:1px solid #1d2740; padding:10px 14px; border-radius:10px; text-align:center; max-width:min(92%, 720px); box-shadow:0 6px 24px rgba(0,0,0,.3); }
+    #msg b { color:var(--accent); }
+    #toast { position:absolute; right:12px; bottom:12px; background:rgba(10,14,22,.85); border:1px solid #1d2740; padding:8px 12px; border-radius:8px; }
+    #controls { position:absolute; left:12px; bottom:12px; display:none; gap:8px; opacity:.7; }
+    .btn { width:56px; height:56px; border-radius:12px; background:#121826; border:1px solid #2a3656; display:grid; place-items:center; color:#b8c2d6; user-select:none; }
+    @media (hover:none) and (pointer:coarse) { #controls { display:flex; } }
+    .legend { color:#9aa3b2; }
+  </style>
+</head>
+<body>
+  <div id="wrap">
+    <header>
+      <div id="hud">
+        <h1 style="margin-right:auto">Éire Noir — <small>GTA‑style top‑down mini</small></h1>
+        <div class="pill">Objective: <b id="objective">Meet contact at the pub</b></div>
+        <div class="pill">Timer: <b id="timer">—</b></div>
+        <div class="pill">Tips: WASD / Arrows to drive, Space = handbrake</div>
+      </div>
+    </header>
+
+    <main id="game">
+      <canvas id="canvas" width="1280" height="720" tabindex="0" aria-label="Éire Noir canvas"></canvas>
+      <div id="msg">☘️ <b>Welcome to Baile Mór</b> — a fictional Irish city. <br/>Drive to <b>The Pint & Patriot</b> (pub) to meet your contact. Avoid red zones (guards). 
+        <div class="legend" style="margin-top:6px">Green = target, Red = patrol, Yellow = you</div>
+      </div>
+      <div id="toast" hidden></div>
+      <div id="controls">
+        <div class="btn" data-key="ArrowLeft">⟵</div>
+        <div class="btn" data-key="ArrowUp">⟰</div>
+        <div class="btn" data-key="ArrowDown">⟱</div>
+        <div class="btn" data-key="ArrowRight">⟶</div>
+      </div>
+    </main>
+
+    <footer>
+      Deploy: drop this single <code>index.html</code> into Vercel (static) • For CUE CMS embed, use an <code>&lt;iframe&gt;</code> pointing to your Vercel URL.
+    </footer>
+  </div>
+
+  <script>
+    // ————————————————————————————————————————————————
+    // Minimal top‑down driving with objectives & patrols
+    // Self‑contained, no assets; works on any static host
+    // ————————————————————————————————————————————————
+
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    const uiObjective = document.getElementById('objective');
+    const uiTimer = document.getElementById('timer');
+    const toast = document.getElementById('toast');
+
+    // World settings
+    const world = { w: 3000, h: 2000 };
+
+    // Camera
+    const camera = { x:0, y:0, lerp:0.15 };
+
+    // Player car
+    const player = {
+      x: 400, y: 1500, angle: 0, vx:0, vy:0, speed:0, width: 36, length: 64,
+      maxSpeed: 4.5, accel: 0.22, brake: 0.25, turn: 0.045, friction: 0.02,
+      color: '#facc15', alive: true
+    };
+
+    // Walls (rectangles) to shape roads
+    const walls = [
+      // City blocks (simple rectangles forming corridors)
+      {x:0,y:0,w:world.w,h:40}, {x:0,y:world.h-40,w:world.w,h:40},
+      {x:0,y:0,w:40,h:world.h}, {x:world.w-40,y:0,w:40,h:world.h},
+      // Internal blocks
+      {x:200,y:200,w:600,h:500},
+      {x:1000,y:300,w:400,h:450},
+      {x:1700,y:250,w:500,h:500},
+      {x:230,y:1100,w:520,h:520},
+      {x:1000,y:1050,w:550,h:520},
+      {x:1750,y:1050,w:550,h:520},
+    ];
+
+    // Zones (objectives & patrols)
+    const zones = {
+      pub:    {x: 760, y: 860, r: 60, color:'#22c55e', label:'The Pint & Patriot'},
+      stash:  {x: 2100, y: 680, r: 60, color:'#22c55e', label:'Safehouse'},
+      docks:  {x: 2500, y: 1600, r: 70, color:'#22c55e', label:'Docks — handoff'}
+    };
+
+    const patrols = [
+      {x: 1400, y: 860, r:120},
+      {x: 2100, y: 1250, r:120},
+      {x: 2400, y: 400, r:120},
+    ];
+
+    // Mission state machine
+    let step = 0; // 0: go to pub, 1: go to safehouse, 2: go to docks, 3: done
+    let timerMs = 0; // starts at step 1
+
+    function setObjective(text){ uiObjective.textContent = text; }
+    function notify(text){
+      toast.textContent = text; toast.hidden = false; clearTimeout(notify.t);
+      notify.t = setTimeout(()=> toast.hidden = true, 2200);
+    }
+
+    setObjective('Meet contact at the pub');
+
+    // Input
+    const keys = new Set();
+    window.addEventListener('keydown', (e)=>{ keys.add(e.key); if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' '].includes(e.key)) e.preventDefault(); });
+    window.addEventListener('keyup', (e)=>{ keys.delete(e.key); });
+    // Mobile buttons
+    document.querySelectorAll('.btn').forEach(btn=>{
+      const key = btn.dataset.key;
+      const press = ()=> keys.add(key);
+      const release = ()=> keys.delete(key);
+      btn.addEventListener('pointerdown', press);
+      btn.addEventListener('pointerup', release);
+      btn.addEventListener('pointercancel', release);
+      btn.addEventListener('pointerleave', release);
+    });
+
+    // Helpers
+    const clamp = (v, a, b)=> Math.max(a, Math.min(b, v));
+    function circleContains(zone, x, y){ const dx=x-zone.x, dy=y-zone.y; return (dx*dx+dy*dy) <= zone.r*zone.r; }
+
+    function resetToCheckpoint(){
+      if(step<=0){ player.x=400; player.y=1500; }
+      else if(step===1){ player.x=800; player.y=930; }
+      else if(step===2){ player.x=2100; player.y=750; }
+      player.vx = player.vy = player.speed = 0; notify('Spotted! Back to last checkpoint.');
+    }
+
+    function update(dt){
+      // Controls
+      let forward = keys.has('w')||keys.has('ArrowUp');
+      let back = keys.has('s')||keys.has('ArrowDown');
+      let left = keys.has('a')||keys.has('ArrowLeft');
+      let right = keys.has('d')||keys.has('ArrowRight');
+      let handbrake = keys.has(' ');
+
+      if(forward) player.speed += player.accel;
+      if(back)    player.speed -= player.brake;
+      player.speed = clamp(player.speed, -player.maxSpeed*0.5, player.maxSpeed);
+
+      // Steering responds more at higher speeds
+      const steer = (left? -1:0) + (right? 1:0);
+      player.angle += steer * player.turn * (0.5 + Math.abs(player.speed));
+
+      // Friction / handbrake
+      const friction = handbrake? player.friction*2.5 : player.friction;
+      player.speed += (player.speed>0? -1:1) * friction;
+      if(Math.abs(player.speed) < 0.01) player.speed = 0;
+
+      // Move along heading
+      const dx = Math.cos(player.angle) * player.speed * 60 * dt;
+      const dy = Math.sin(player.angle) * player.speed * 60 * dt;
+      player.x += dx; player.y += dy;
+
+      // Collisions with walls
+      const rects = walls;
+      const halfW = player.length/2, halfH = player.width/2; // oriented box approx with AABB
+      // simple AABB using player's center (approx; good enough for rectangles if we ignore rotation for collisions)
+      for(const r of rects){
+        const px = clamp(player.x, r.x, r.x+r.w);
+        const py = clamp(player.y, r.y, r.y+r.h);
+        const dx = player.x - px, dy = player.y - py;
+        const overlap = (dx*dx + dy*dy) < (halfH*halfH); // loose threshold
+        if(overlap){
+          // push out: resolve by moving opposite velocity
+          player.x -= Math.cos(player.angle) * player.speed * 6;
+          player.y -= Math.sin(player.angle) * player.speed * 6;
+          player.speed *= -0.3; // bounce
+        }
+      }
+
+      // Keep in bounds
+      player.x = clamp(player.x, 60, world.w-60);
+      player.y = clamp(player.y, 60, world.h-60);
+
+      // Patrol detection
+      for(const p of patrols){
+        if(circleContains(p, player.x, player.y)) { resetToCheckpoint(); break; }
+      }
+
+      // Objectives
+      if(step===0 && circleContains(zones.pub, player.x, player.y)){
+        step = 1; setObjective('Pick up package at Safehouse (timer starts)');
+        document.getElementById('msg').hidden = true; notify('Contact: "Fair play. Now leg it to the safehouse."');
+        timerMs = 90_000; // 90 seconds
+      }
+      else if(step===1 && circleContains(zones.stash, player.x, player.y)){
+        step = 2; setObjective('Deliver to the Docks before timer ends');
+        notify('You got the package. Guards are twitchy.');
+      }
+      else if(step===2 && circleContains(zones.docks, player.x, player.y)){
+        step = 3; setObjective('Done — Grand job!');
+        notify('Mission complete. Tea and a custard slice?');
+      }
+
+      // Timer countdown if active
+      if(step>=1 && step<3 && timerMs>0){
+        timerMs -= dt*1000; if(timerMs<=0){ timerMs=0; resetToCheckpoint(); timerMs=90_000; }
+      }
+
+      uiTimer.textContent = step>=1 && step<3 ? (timerMs/1000).toFixed(1)+'s' : '—';
+
+      // Camera follow
+      camera.x += (player.x - camera.x) * camera.lerp;
+      camera.y += (player.y - camera.y) * camera.lerp;
+    }
+
+    function draw(){
+      ctx.clearRect(0,0,canvas.width, canvas.height);
+
+      // Camera transform
+      ctx.save();
+      const cx = Math.round(canvas.width/2 - camera.x);
+      const cy = Math.round(canvas.height/2 - camera.y);
+      ctx.translate(cx, cy);
+
+      // Draw road background grid
+      ctx.fillStyle = '#0c1220';
+      ctx.fillRect(0,0,world.w,world.h);
+
+      // Draw walls (buildings)
+      ctx.fillStyle = '#1a2236';
+      for(const r of walls){ ctx.fillRect(r.x, r.y, r.w, r.h); }
+
+      // Zones
+      function drawZone(z){
+        ctx.beginPath(); ctx.arc(z.x, z.y, z.r, 0, Math.PI*2);
+        ctx.fillStyle = z.color; ctx.globalAlpha=0.18; ctx.fill(); ctx.globalAlpha=1;
+        ctx.strokeStyle = z.color; ctx.lineWidth=2; ctx.stroke();
+        ctx.font = '12px system-ui'; ctx.fillStyle = '#b6fac6';
+        ctx.fillText(z.label, z.x - ctx.measureText(z.label).width/2, z.y - z.r - 6);
+      }
+      drawZone(zones.pub); drawZone(zones.stash); drawZone(zones.docks);
+
+      // Patrols
+      for(const p of patrols){
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+        ctx.fillStyle = '#ef4444'; ctx.globalAlpha=0.12; ctx.fill(); ctx.globalAlpha=1;
+        ctx.strokeStyle = '#ef4444'; ctx.setLineDash([6,6]); ctx.stroke(); ctx.setLineDash([]);
+      }
+
+      // Player car
+      ctx.save();
+      ctx.translate(player.x, player.y); ctx.rotate(player.angle);
+      // shadow
+      ctx.fillStyle = 'rgba(0,0,0,.4)'; ctx.fillRect(-player.length/2+3, -player.width/2+6, player.length, player.width);
+      // body
+      ctx.fillStyle = player.color; ctx.fillRect(-player.length/2, -player.width/2, player.length, player.width);
+      // windscreen
+      ctx.fillStyle = '#0b1a2e'; ctx.fillRect(0, -player.width/2+4, player.length/2-4, player.width-8);
+      // nose indicator
+      ctx.fillStyle = '#111827'; ctx.fillRect(player.length/2-6, -4, 12, 8);
+      ctx.restore();
+
+      // Minimap
+      const mw=220,mh=140; const mx = canvas.width - mw - 16, my = 16;
+      ctx.restore(); // back to screen space for HUD overlay
+      ctx.save();
+      ctx.translate(mx, my);
+      ctx.fillStyle = 'rgba(8,12,20,.75)'; ctx.fillRect(0,0,mw,mh);
+      ctx.strokeStyle = '#223153'; ctx.strokeRect(0,0,mw,mh);
+      const sx = mw/world.w, sy = mh/world.h;
+      // buildings
+      ctx.fillStyle = '#24324e';
+      for(const r of walls){ ctx.fillRect(r.x*sx, r.y*sy, r.w*sx, r.h*sy); }
+      // patrols
+      ctx.strokeStyle = '#ef4444'; ctx.globalAlpha=.8;
+      for(const p of patrols){ ctx.beginPath(); ctx.arc(p.x*sx, p.y*sy, p.r*sx, 0, Math.PI*2); ctx.stroke(); }
+      ctx.globalAlpha=1;
+      // zones
+      ctx.strokeStyle = '#22c55e';
+      for(const z of Object.values(zones)){ ctx.beginPath(); ctx.arc(z.x*sx, z.y*sy, z.r*sx, 0, Math.PI*2); ctx.stroke(); }
+      // player
+      ctx.fillStyle = '#facc15'; ctx.fillRect(player.x*sx-2, player.y*sy-2, 4, 4);
+      ctx.restore();
+    }
+
+    // Main loop
+    let last = performance.now();
+    function frame(now){
+      const dt = Math.min(1/30, (now-last)/1000); last = now;
+      update(dt); draw(); requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+
+    // Focus canvas for immediate keyboard input (Vercel preview etc.)
+    window.addEventListener('load', ()=> canvas.focus());
+  </script>
+</body>
+</html>
