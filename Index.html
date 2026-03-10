@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Word of the Day</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="wrap">
+      <section class="card">
+        <header class="header">
+          <div>
+            <div class="label">Word of the Day</div>
+            <div class="meta">
+              Timezone: <code>Europe/Dublin</code> · Date: <span id="today">—</span> · Index:
+              <span id="index">—</span>
+            </div>
+          </div>
+        </header>
+
+        <h1 class="word">
+          <span id="word">Loading…</span>
+          <span id="pos" class="pos"></span>
+        </h1>
+
+        <div class="section">
+          <div class="sectionTitle">Meaning</div>
+          <div id="definition" class="definition">—</div>
+        </div>
+
+        <div class="section">
+          <div class="sectionTitle">Usage</div>
+          <blockquote id="usage" class="usage">—</blockquote>
+        </div>
+
+        <div class="actions">
+          <button id="btnShare" class="btn">Share</button>
+          <button id="btnPrev" class="btn">Previous</button>
+          <button id="btnNext" class="btn">Next</button>
+        </div>
+
+        <div id="error" class="error" aria-live="polite"></div>
+        <footer class="footer">Data source: <code>/words.json</code></footer>
+      </section>
+    </main>
+
+    <script type="module" src="./script.js"></script>
+  </body>
+</html>
