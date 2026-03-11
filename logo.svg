@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 100">
+  <rect width="100%" height="100%" fill="white"/>
+
+  <text x="0" y="70"
+        font-family="Georgia, serif"
+        font-size="64"
+        font-weight="700"
+        fill="#111">
+    Word
+  </text>
+
+  <text x="210" y="70"
+        font-family="Georgia, serif"
+        font-size="42"
+        font-weight="500"
+        fill="#111">
+    of the
+  </text>
+
+  <text x="360" y="70"
+        font-family="Georgia, serif"
+        font-size="64"
+        font-weight="700"
+        fill="#111">
+    Day
+  </text>
+
+  <rect x="540" y="32" width="40" height="40" fill="#0f5b4f"/>
+  <rect x="590" y="32" width="40" height="40" fill="#e33c2d"/>
+  <rect x="640" y="32" width="40" height="40" fill="#8f8f8f"/>
+</svg>
