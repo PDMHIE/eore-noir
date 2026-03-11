@@ -1,69 +1,102 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Word of the Day</title>
-    <link rel="stylesheet" href="./styles.css" />
-  </head>
-  <body><header class="topbar">
-  <div class="topbar-inner">
-    <div class="topbar-left"></div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Word of the Day</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
 
-    <div class="topbar-center">
-      <img src="./logo.svg" alt="Word of the Day" class="logo" />
+<body>
+
+  <!-- =========================
+       TOP BAR
+  ========================== -->
+  <header class="topbar">
+    <div class="topbar-inner">
+
+      <!-- Left spacer (keeps logo perfectly centred on desktop) -->
+      <div class="topbar-left"></div>
+
+      <!-- Centered Logo -->
+      <div class="topbar-center">
+        <img src="./logo.svg" alt="Word of the Day" class="logo" />
+      </div>
+
+      <!-- Right Side Icons + Button -->
+      <div class="topbar-right">
+
+        <!-- Info Icon -->
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="16" x2="12" y2="12"></line>
+          <circle cx="12" cy="8" r="1"></circle>
+        </svg>
+
+        <!-- Stats Icon -->
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="#111">
+          <rect x="3" y="10" width="3" height="10"></rect>
+          <rect x="10" y="6" width="3" height="14"></rect>
+          <rect x="17" y="3" width="3" height="17"></rect>
+        </svg>
+
+        <button class="gaelic-btn">AS GAEILGE INNIU</button>
+
+      </div>
+
     </div>
+  </header>
 
-    <div class="topbar-right top-icons">
-      <!-- Info Icon -->
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2">
-        <circle cx="12" cy="12" r="10"></circle>
-        <line x1="12" y1="16" x2="12" y2="12"></line>
-        <circle cx="12" cy="8" r="1"></circle>
-      </svg>
+  <!-- =========================
+       GAME CONTENT
+  ========================== -->
+  <main class="wrap">
 
-      <!-- Stats Icon -->
-      <svg width="26" height="26" viewBox="0 0 24 24" fill="#111">
-        <rect x="3" y="10" width="3" height="10"></rect>
-        <rect x="10" y="6" width="3" height="14"></rect>
-        <rect x="17" y="3" width="3" height="17"></rect>
-      </svg>
+    <section class="card">
 
-      <button class="gaelic-btn">AS GAEILGE INNIU</button>
-    </div>
-  </div>
-</header>
+      <div class="label">Word of the Day</div>
 
-        <h1 class="word">
-          <span id="word">Loading…</span>
-          <span id="pos" class="pos"></span>
-        </h1>
+      <div class="meta">
+        Timezone: Europe/Dublin ·
+        Date: <span id="today">—</span> ·
+        Index: <span id="index">—</span>
+      </div>
 
-        <div class="section">
-          <div class="sectionTitle">Meaning</div>
-          <div id="definition" class="definition">—</div>
-        </div>
+      <h1 class="word">
+        <span id="word">Loading…</span>
+        <span id="pos" class="pos"></span>
+      </h1>
 
-        <div class="section">
-          <div class="sectionTitle">Usage</div>
-          <blockquote id="usage" class="usage">—</blockquote>
-        </div>
+      <div class="section">
+        <div class="sectionTitle">Meaning</div>
+        <div id="definition" class="definition">—</div>
+      </div>
 
-        <div class="actions">
-          <button id="btnShare" class="btn">Share</button>
-          <button id="btnPrev" class="btn">Previous</button>
-          <button id="btnNext" class="btn">Next</button>
-        </div>
+      <div class="section">
+        <div class="sectionTitle">Usage</div>
+        <blockquote id="usage" class="usage">—</blockquote>
+      </div>
 
-        <div id="error" class="error" aria-live="polite"></div>
-        <footer class="footer">Data source: <code>/words.json</code></footer>
-      </section>
-    </main>
+      <div class="actions">
+        <button id="btnShare" class="btn">Share</button>
+        <button id="btnPrev" class="btn">Previous</button>
+        <button id="btnNext" class="btn">Next</button>
+      </div>
 
-    <script type="module" src="./script.js"></script>
-  </body>
+      <div id="error" class="error"></div>
+
+      <div class="footer">
+        Data source: <code>/words.json</code>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- =========================
+       SCRIPT
+  ========================== -->
+  <script type="module" src="./script.js"></script>
+
+</body>
 </html>
-
-
-
-
