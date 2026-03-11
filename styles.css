@@ -179,3 +179,8 @@ body {
   }
 
 }
+@media (max-width: 768px) {
+  .topbar {
+    padding: 16px 10px;
+  }
+}
