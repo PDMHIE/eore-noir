@@ -160,27 +160,30 @@ body {
   height: 50px;
 }
 
-/* -------- MOBILE LAYOUT -------- */
+/* Force-centre header on mobile */
 @media (max-width: 768px) {
-
   .topbar-inner {
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 12px !important;
   }
 
+  /* centre the actual image element */
   .logo {
-    height: 60px;
+    display: block !important;
+    margin: 0 auto !important;
+    height: 56px;         /* tweak as you like */
+    max-width: 92vw;      /* stop it overflowing */
   }
 
   .top-icons {
-    justify-content: center;
     width: 100%;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 14px;
   }
+}
 
-}
-@media (max-width: 768px) {
-  .topbar {
-    padding: 16px 10px;
-  }
-}
