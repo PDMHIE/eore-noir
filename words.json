@@ -1,4 +1,22 @@
-,
+[
+  {
+    "word": "serendipity",
+    "partOfSpeech": "noun",
+    "definition": "The occurrence of events by chance in a happy or beneficial way.",
+    "usage": "Finding the book in a charity shop was pure serendipity."
+  },
+  {
+    "word": "laconic",
+    "partOfSpeech": "adjective",
+    "definition": "Using very few words.",
+    "usage": "Her laconic reply made it clear the meeting was over."
+  },
+  {
+    "word": "sonder",
+    "partOfSpeech": "noun",
+    "definition": "The realization that each passerby has a life as vivid and complex as your own.",
+    "usage": "On the train home, he felt a sudden wave of sonder."
+  },
   {
     "word": "ephemeral",
     "partOfSpeech": "adjective",
@@ -59,3 +77,5 @@
     "definition": "New or unusual in an interesting way.",
     "usage": "The company introduced a novel solution to the problem."
   }
+]
+
