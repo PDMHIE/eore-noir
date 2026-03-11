@@ -145,3 +145,37 @@ body {
   font-size: 0.9rem;
 
 }
+/* ---------- HEADER LAYOUT ---------- */
+
+.topbar-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+/* Logo sizing */
+.logo {
+  height: 50px;
+}
+
+/* -------- MOBILE LAYOUT -------- */
+@media (max-width: 768px) {
+
+  .topbar-inner {
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .logo {
+    height: 60px;
+  }
+
+  .top-icons {
+    justify-content: center;
+    width: 100%;
+  }
+
+}
