@@ -147,73 +147,72 @@ body {
 }
 /* ---------- HEADER LAYOUT ---------- */
 
+/* ---------- TOP BAR LAYOUT ---------- */
+.topbar {
+  background: #f1f1f1;
+  border-bottom: 1px solid #ddd;
+  padding: 12px 16px;
+}
+
 .topbar-inner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
   max-width: 1000px;
   margin: 0 auto;
+
+  display: grid;
+  grid-template-columns: 1fr auto 1fr; /* left spacer | centered logo | right icons */
+  align-items: center;
+  column-gap: 12px;
 }
 
-/* Logo sizing */
-.logo {
-  height: 50px;
-}
-
-/* Force-centre header on mobile */
-@media (max-width: 768px) {
-  .topbar-inner {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    justify-content: center !important;
-    gap: 12px !important;
-  }
-
-  /* centre the actual image element */
-  .logo {
-  display: block;
-  margin: 0 auto;
-  max-width: 260px; /* keeps it neat on mobile */
-  height: auto;
-}
-
-  .top-icons {
-    width: 100%;
-    display: flex !important;
-    justify-content: center !important;
-    align-items: center !important;
-    gap: 14px;
-  }
-}
-/* ---- Logo centring: works even if header is flex/space-between elsewhere ---- */
-.logo-wrap {
-  width: 100%;
+.topbar-center {
   display: flex;
   justify-content: center;
 }
 
 .logo {
   display: block;
-  width: min(320px, 92vw); /* bigger on mobile, never overflows */
+  width: 220px;     /* adjust */
+  max-width: 70vw;
   height: auto;
 }
 
-/* Mobile: stack and centre everything */
+.topbar-right {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 18px;
+}
+
+.gaelic-btn {
+  background: #c9cf4a;
+  border: none;
+  padding: 10px 14px;
+  font-weight: 700;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+/* ---------- MOBILE ---------- */
 @media (max-width: 768px) {
   .topbar-inner {
-    flex-direction: column !important;
-    align-items: center !important;
-    justify-content: center !important;
-    gap: 12px !important;
+    grid-template-columns: 1fr;  /* stack */
+    row-gap: 10px;
   }
 
-  .top-icons {
-    width: 100%;
-    display: flex;
-    justify-content: center !important;
-    align-items: center !important;
-    gap: 14px;
+  .topbar-left { display: none; }
+
+  .logo {
+    width: min(280px, 92vw);
+  }
+
+  .topbar-right {
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .gaelic-btn {
+    padding: 10px 12px;
   }
 }
 
