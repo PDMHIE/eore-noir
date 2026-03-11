@@ -6,7 +6,29 @@
     <title>Word of the Day</title>
     <link rel="stylesheet" href="./styles.css" />
   </head>
-  <body>
+  <body><header class="topbar">
+  <div class="topbar-inner">
+    <img src="/logo.svg" alt="Word of the Day" class="logo" />
+
+    <div class="top-icons">
+      <!-- Info Icon -->
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2">
+        <circle cx="12" cy="12" r="10"/>
+        <line x1="12" y1="16" x2="12" y2="12"/>
+        <circle cx="12" cy="8" r="1"/>
+      </svg>
+
+      <!-- Stats Icon -->
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="#111">
+        <rect x="3" y="10" width="3" height="10"/>
+        <rect x="10" y="6" width="3" height="14"/>
+        <rect x="17" y="3" width="3" height="17"/>
+      </svg>
+
+      <button class="gaelic-btn">AS GAEILGE INNIU</button>
+    </div>
+  </div>
+</header>
     <main class="wrap">
       <section class="card">
         <header class="header">
@@ -48,3 +70,4 @@
     <script type="module" src="./script.js"></script>
   </body>
 </html>
+
