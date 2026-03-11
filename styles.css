@@ -172,11 +172,11 @@ body {
 
   /* centre the actual image element */
   .logo {
-    display: block !important;
-    margin: 0 auto !important;
-    height: 56px;         /* tweak as you like */
-    max-width: 92vw;      /* stop it overflowing */
-  }
+  display: block;
+  margin: 0 auto;
+  max-width: 260px; /* keeps it neat on mobile */
+  height: auto;
+}
 
   .top-icons {
     width: 100%;
@@ -186,4 +186,5 @@ body {
     gap: 14px;
   }
 }
+
 
