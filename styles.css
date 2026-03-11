@@ -186,5 +186,35 @@ body {
     gap: 14px;
   }
 }
+/* ---- Logo centring: works even if header is flex/space-between elsewhere ---- */
+.logo-wrap {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.logo {
+  display: block;
+  width: min(320px, 92vw); /* bigger on mobile, never overflows */
+  height: auto;
+}
+
+/* Mobile: stack and centre everything */
+@media (max-width: 768px) {
+  .topbar-inner {
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 12px !important;
+  }
+
+  .top-icons {
+    width: 100%;
+    display: flex;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 14px;
+  }
+}
 
 
