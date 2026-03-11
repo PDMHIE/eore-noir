@@ -1,20 +1,61 @@
-[
+,
   {
-    "word": "serendipity",
-    "partOfSpeech": "noun",
-    "definition": "The occurrence of events by chance in a happy or beneficial way.",
-    "usage": "Finding the book in a charity shop was pure serendipity."
-  },
-  {
-    "word": "laconic",
+    "word": "ephemeral",
     "partOfSpeech": "adjective",
-    "definition": "Using very few words.",
-    "usage": "Her laconic reply made it clear the meeting was over."
+    "definition": "Lasting for a very short time.",
+    "usage": "The beauty of the cherry blossoms was fleeting and ephemeral."
   },
   {
-    "word": "sonder",
-    "partOfSpeech": "noun",
-    "definition": "The realization that each passerby has a life as vivid and complex as your own.",
-    "usage": "On the train home, he felt a sudden wave of sonder."
+    "word": "candid",
+    "partOfSpeech": "adjective",
+    "definition": "Truthful and straightforward; frank.",
+    "usage": "She gave a candid interview about the challenges she faced."
+  },
+  {
+    "word": "eloquent",
+    "partOfSpeech": "adjective",
+    "definition": "Fluent or persuasive in speaking or writing.",
+    "usage": "His eloquent speech moved the entire audience."
+  },
+  {
+    "word": "tenacious",
+    "partOfSpeech": "adjective",
+    "definition": "Holding firmly to something; persistent.",
+    "usage": "Her tenacious efforts finally paid off."
+  },
+  {
+    "word": "meticulous",
+    "partOfSpeech": "adjective",
+    "definition": "Showing great attention to detail; very careful and precise.",
+    "usage": "He kept meticulous records of every transaction."
+  },
+  {
+    "word": "resilient",
+    "partOfSpeech": "adjective",
+    "definition": "Able to withstand or recover quickly from difficult conditions.",
+    "usage": "The community proved resilient in the face of adversity."
+  },
+  {
+    "word": "ambivalent",
+    "partOfSpeech": "adjective",
+    "definition": "Having mixed feelings or contradictory ideas about something.",
+    "usage": "She felt ambivalent about moving abroad."
+  },
+  {
+    "word": "pragmatic",
+    "partOfSpeech": "adjective",
+    "definition": "Dealing with things sensibly and realistically.",
+    "usage": "They took a pragmatic approach to solving the issue."
+  },
+  {
+    "word": "ubiquitous",
+    "partOfSpeech": "adjective",
+    "definition": "Present, appearing, or found everywhere.",
+    "usage": "Smartphones have become ubiquitous in modern life."
+  },
+  {
+    "word": "novel",
+    "partOfSpeech": "adjective",
+    "definition": "New or unusual in an interesting way.",
+    "usage": "The company introduced a novel solution to the problem."
   }
-]
